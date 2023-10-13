@@ -1,0 +1,410 @@
+Resource:
+https://www.youtube.com/watch?v=yaxUV3Ib4vM&t=187s
+https://jqueryvalidation.org/
+
+PHP: 
+wp_register_script('jquery.validate.min', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js', 'jquery');
+wp_enqueue_script('jquery.validate.min');  
+	
+HTML: 
+<!--<form class="mos-registration-form needs-validation" novalidate method="post" enctype="multipart/form-data">-->
+<form id="signupForm" class="mos-registration-form" method="post" enctype="multipart/form-data">
+    <?php wp_nonce_field( 'mos_registration_form_action', 'mos_registration_form_field' ); ?>
+    <div class="registration-form-wrapper <?php echo $atts['container_class']?>">
+        <h2 class="text-center">New Business Customer</h2>
+        <div class="container">
+            <div class="certificate-info position-relative">
+                <div class="row align-items-center">
+                    <div class="col-lg-3">
+                        <img src="<?php echo get_stylesheet_directory_uri(); ?>/images/logo-bolagsverket-_vertical-1.svg" alt="" class="img-fluid" width="100" height="42">
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        <strong>We need a copy of your registration certificate * Drag your PDF to this box(5mb)</strong>
+                        <div class="file-name"></div>
+                        <input name="registration_certificate" id="registration_certificate" class="registration_certificate" type="file" placeholder="Registration certificate" accept="application/pdf">
+                    </div>
+                    <div class="col-lg-3">
+                    <button class="btn w-100 registration-form-button btn-theme btn-upload-file">
+                        <img src="<?php echo get_stylesheet_directory_uri() ?>/images/upload_icon.svg" alt="" class="img-fluid img-registration-form-icon me-1">
+                        <span class="text">Upload PDF</span>
+                    </button>
+                    </div>
+                </div>
+            </div>
+            <div class="billing-address">
+                <div class="form-group">
+                    <select class="form-select" name="country" id="country" id="country">
+                        <option value="">Country *</option>
+                        <?php foreach ($countries as $key => $value) : ?>
+                        <option value="<?php echo $key ?>" <?php selected(@$_POST['country'], $key) ?>><?php echo $value ?></option>
+                        <?php endforeach?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input name="billing_company" id="billing_company" class="form-control" type="text" placeholder="Company Name(Legal) *" value="<?php echo @$_POST['billing_company'] ?>">
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <input name="vin" id="vin" class="form-control" type="text" placeholder="VAT identification number *" value="<?php echo @$_POST['vin'] ?>">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <input name="registration_number" id="registration_number" class="form-control" type="text" placeholder="Registration number *" value="<?php echo @$_POST['registration_number'] ?>">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <textarea name="billing_address_1" id="billing_address_1" class="form-control" rows="3" placeholder="Invoice address *"><?php echo @$_POST['billing_address_1'] ?></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <input name="billing_postcode" id="billing_postcode" class="form-control" type="text" placeholder="Zip code *" value="<?php echo @$_POST['billing_postcode'] ?>">
+                        </div>
+                        <div class="form-group">
+                            <input name="billing_city" id="billing_city" class="form-control" type="text" placeholder="City *" value="<?php echo @$_POST['billing_city'] ?>">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-15">
+                <div class="col-auto">
+                    <label class="form-check-label">Do you have a different delivery address (than above) *</label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="different_delivery form-check-input" type="radio" name="different_delivery" id="different_delivery_yes" value="yes" <?php if (@$_POST['different_delivery'] == 'yes') echo 'checked' ?>>
+                        <label class="form-check-label" for="different_delivery_yes">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="different_delivery form-check-input" type="radio" name="different_delivery" id="different_delivery_no" value="no" <?php if (@$_POST['different_delivery'] == 'no' || !@$_POST['different_delivery']) echo 'checked' ?>>
+                        <label class="form-check-label" for="different_delivery_no">No</label>
+                    </div>
+                </div>
+            </div>
+            <div class="shipping-address" style="display: none">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <textarea name="shipping_address_1" class="form-control" rows="3" placeholder="Delivery address"><?php echo @$_POST['shipping_address_1'] ?></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <input name="shipping_postcode" class="form-control" type="text" placeholder="Zip code (Delivery address)" value="<?php echo @$_POST['shipping_postcode'] ?>">
+                        </div>
+                        <div class="form-group">
+                            <input name="shipping_city" class="form-control" type="text" placeholder="City" value="<?php echo @$_POST['shipping_city'] ?>">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="personal-info">
+                <h3 class="text-center">Contact Person</h3>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <input name="first_name" id="first_name" class="form-control" type="text" placeholder="First Name *" value="<?php echo @$_POST['first_name'] ?>">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <input name="last_name" id="last_name" class="form-control" type="text" placeholder="Last Name" value="<?php echo @$_POST['last_name'] ?>">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <input name="email" id="email" class="form-control" type="email" placeholder="E-mail Address *" value="<?php echo @$_POST['email'] ?>">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <input name="billing_phone" id="billing_phone" class="form-control" type="text" placeholder="Phone Number *" value="<?php echo @$_POST['billing_phone'] ?>">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input name="password" id="password" class="form-control" type="password" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <input name="re_password" id="re_password" class="form-control" type="password" placeholder="Confirm Password">
+                </div>
+                <div class="form-group">
+                    <input name="contact_people" id="contact_people" class="form-control" type="text" placeholder="Contact at Smart Parts (Name)" value="<?php echo @$_POST['contact_people'] ?>">
+                </div>
+
+            </div>
+            <div class="business-info">
+                <h3 class="text-center">Business</h3>
+                <div class="row">
+                    <div class="col-auto">
+                        <label class="form-check-label">Business Type *</label>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-check form-check-inline">
+                            <input name="business_type[]" class="form-check-input" type="checkbox" id="BusinessTypeRetail" value="Retail">
+                            <label class="form-check-label" for="BusinessType">Retail</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input name="business_type[]" class="form-check-input" type="checkbox" id="BusinessTypeRepairShop" value="Repair Shop">
+                            <label class="form-check-label" for="BusinessTypeRepairShop">Repair Shop</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input name="business_type[]" class="form-check-input" type="checkbox" id="BusinessTypeWebshop" value="Webshop">
+                            <label class="form-check-label" for="BusinessTypeWebshop">Webshop</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input name="business_type[]" class="form-check-input" type="checkbox" id="BusinessTypeDistributor" value="Distributor">
+                            <label class="form-check-label" for="BusinessTypeDistributor">Distributor</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input name="business_type[]" class="form-check-input" type="checkbox" id="BusinessTypeOther" value="Other">
+                            <label class="form-check-label" for="BusinessTypeOther">Other</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="additional-info">
+                <h3 class="text-center">Additional information and terms</h3>
+                <div class="form-group">
+                    <textarea name="comments" class="form-control" rows="3" placeholder="Comments"><?php echo @$_POST['comments'] ?></textarea>
+                </div>
+            </div>
+            <div class="agreement-info">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="aggreement" name="aggreement">
+                            <label class="form-check-label" for="aggreement">
+                                I agree to the general sales terms*
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-lg-end">
+                        <a class="btn registration-form-button btn-link" target="_blank" href="#">                        
+                            <img src="<?php echo get_stylesheet_directory_uri() ?>/images/link_icon.svg" alt="" class="img-fluid img-registration-form-icon me-1">
+                            <span class="text">Open sales terms</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="seperator"></div>
+                <div class="row">
+                    <div class="col-lg-9">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="information_store" name="information_store">
+                            <label class="form-check-label" for="information-store">
+                                I allow my information to be stored in accordance with the General Data Protection Regulation (GDPR) *
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 text-lg-end">
+                        <a class="btn registration-form-button btn-link" target="_blank" href="#">                        
+                            <img src="<?php echo get_stylesheet_directory_uri() ?>/images/link_icon.svg" alt="" class="img-fluid img-registration-form-icon me-1">
+                            <span class="text">Read more</span>
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+            
+            <div class="text-center mt-3"><button class="btn btn-mos-registration registration-form-button" type="submit">Submit Application</button></div>
+            
+        </div>        
+    </div>
+</form>
+
+Javascript:
+<script>
+    jQuery(document).ready(function ($) {
+        
+		/*$.validator.setDefaults( {
+			submitHandler: function () {
+				alert( "submitted!" );
+			}
+		} );*/
+        $.validator.addMethod(
+          "regex",
+          function(value, element, regexp) {
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+          },
+          "Please check your input."
+        );
+        
+        $( "#signupForm" ).validate( {
+            rules: {
+//                registration_certificate: {
+//                    required: true,
+//                    accept: "application/pdf"
+//                },
+                country: "required",
+                billing_company: "required",
+                vin: "required",
+                registration_number: "required",
+                billing_address_1: "required",
+                billing_postcode: "required",
+                billing_city: "required",                           
+                first_name: {
+                    required: true,
+                    minlength: 2,
+                    regex: "^[a-zA-Z -']*$"
+                },       
+                last_name: {
+                    regex: "^[a-zA-Z -']*$"
+                },      
+                email: {
+                    required: true,
+                    email: true,
+                    remote: {
+                        url: mos_ajax_object.ajaxurl, // or example_ajax_obj.ajaxurl if using on frontend
+                        type:"POST",
+                        dataType:"json",
+                        data: {
+                            'action': 'registration_email_tracking',
+                            emails: function(){
+                                return $('#signupForm :input[name="email"]').val();
+                            }
+                        }
+                    }
+                },                      
+                billing_phone: "required",   
+                password: {
+                    required: true,
+                    minlength: 8,
+                    regex: "^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
+                },
+                re_password: {
+                    required: true,
+                    minlength: 8,
+                    equalTo: "#password"
+                },  
+                contact_people: {
+                    regex: "^[a-zA-Z -']*$"
+                },
+                aggreement: "required",
+                information_store: "required",
+//                email1: {
+//                    required: true,
+//                    email: true
+//                },
+//                agree1: "required"
+            },
+            messages: {
+//                registration_certificate: {
+//                    required: "Please enter your registration certificate file",
+//                    accept: "Please enter a PDF file"
+//                },
+                country: "Please select Country",
+                billing_company: "Please enter your Company Name(Legal)",
+                vin: "Please enter your VAT identification number",
+                registration_number: "Please enter your Registration number",
+                billing_address_1: "Please enter your Invoice address",
+                billing_postcode: "Please enter your Zip code",
+                billing_city: "Please enter your City",
+                first_name: {
+                    required: "Please enter a First name",
+                    minlength: "Your First name must consist of at least 2 characters",
+                    regex: "You can use only alphabets"
+                },
+                last_name: {
+                    regex: "You can use only alphabets"
+                },
+                email: {                    
+                    required: "Please enter your email",
+                    email: "Please enter a valid email",
+                    remote: "This email has been taken already"
+                },                     
+                billing_phone: "Please enter your Phone number",
+                password: {
+                    required: "Please provide a password",
+                    minlength: "Your password must be at least 8 characters long",
+                    regex: "Minimum eight characters, at least one letter and one number"
+                },
+                re_password: {
+                    required: "Please provide a password",
+                    minlength: "Your password must be at least 8 characters long",
+                    equalTo: "Please enter the same password as above"
+                }
+                /*
+                email1: "Please enter a valid email address",
+                agree1: "Please accept our policy"*/
+            },
+            errorElement: "div",
+            errorPlacement: function ( error, element ) {
+                // Add the `help-block` class to the error element
+                error.addClass( "invalid-feedback" );
+
+                // Add `has-feedback` class to the parent div.form-group
+                // in order to add icons to inputs
+                //element.parents( ".col-sm-5" ).addClass( "has-feedback" );
+                element.addClass( "is-invalid" );
+
+                if ( element.prop( "type" ) === "checkbox" ) {
+                    error.insertAfter( element.parent( "label" ) );
+                } else {
+                    error.insertAfter( element );
+                }
+
+                // Add the span element, if doesn't exists, and apply the icon classes to it.
+//                if ( !element.next( "span" )[ 0 ] ) {
+//                    $( "<span class='glyphicon glyphicon-remove form-control-feedback'></span>" ).insertAfter( element );
+//                }
+            },
+            success: function ( label, element ) {
+                // Add the span element, if doesn't exists, and apply the icon classes to it.
+                if ( !$( element ).next( "span" )[ 0 ] ) {
+                    $( "<span class='glyphicon glyphicon-ok form-control-feedback'></span>" ).insertAfter( $( element ) );
+                }
+            },
+            highlight: function ( element, errorClass, validClass ) {
+                $( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+                //$( element ).parents( ".col-sm-5" ).addClass( "has-error" ).removeClass( "has-success" );
+                //$( element ).next( "span" ).addClass( "glyphicon-remove" ).removeClass( "glyphicon-ok" );
+            },
+            unhighlight: function ( element, errorClass, validClass ) {
+                $( element ).addClass( "is-valid" ).removeClass( "is-invalid" );
+                //$( element ).parents( ".col-sm-5" ).addClass( "has-success" ).removeClass( "has-error" );
+                //$( element ).next( "span" ).addClass( "glyphicon-ok" ).removeClass( "glyphicon-remove" );
+            }
+        } );
+        
+        /*$('.mos-registration-form').submit(function(e){
+            e.preventDefault();		
+            var form = $(this);
+            console.log(mos_ajax_object.ajaxurl);
+            
+            var form_data = $(this).serialize();
+            $(this).find('.btn-mos-registration').html('Requesting...').prop( "disabled", true );
+            //console.log(form_data);
+            $.ajax({
+                url: frontend_ajax_object.ajaxurl, // or example_ajax_obj.ajaxurl if using on frontend
+                type:"POST",
+                dataType:"json",
+                data: {
+                    'action': 'registration_tracking',
+                    'form_data' : form_data,
+                },
+                success: function(result){
+                    if(result.validation){
+                        form.removeClass('was-validated');               
+                    } else {
+                        form.find('.btn-mos-registration').html('Try Again').prop( "disabled", false );
+                    }
+                },
+                error: function(errorThrown){
+                    console.log(errorThrown);
+                    form.find('.btn-mos-registration').html('Try Again').prop( "disabled", false );
+                }
+            });
+            
+        });*/
+        
+    });
+</script>
