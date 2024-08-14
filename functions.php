@@ -21,7 +21,7 @@ function email_tracking_ajax_callback () {
     $output = array($searcharray['email']);
 	$output['validation'] = false;
     //$output = array($searcharray['mos_email_form_field']);
-	if (  filter_var($searcharray['email'], FILTER_VALIDATE_EMAIL) && isset( $searcharray['mos_email_form_field'] ) && wp_verify_nonce( $searcharray['mos_email_form_field'], 'mos_email_form_action' ) ) {
+	if (  filter_var($searcharray['email'], FILTER_VALIDATE_EMAIL) && isset( $searcharray['mos_email_form_field'] ) && wp_verify_nonce(sanitize_text_field(wp_unslash($searcharray['mos_email_form_field'])), 'mos_email_form_action' ) ) {
 		$output['validation'] = true;
 		$admin_email = get_option( 'admin_email' );
 		//$admin_email = 'mostak.shahid@gmail.com';
